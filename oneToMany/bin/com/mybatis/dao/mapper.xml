@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.ICountryDao">
+	
+	<resultMap type="Country" id="countryMapper">
+		<id column="cid" property="cid"/>
+		<result column="cname" property="cname"/>
+		<!-- collection property中放入关联属性名,此处是Country中的ministers -->
+		<collection property="ministers" ofType="Minister">
+			<id column="mid" property="mid"/>
+			<result column="mname" property="mname"/>
+		</collection>
+	</resultMap>
+	
+	<select id="selectCountryById" resultMap="countryMapper">
+		<!-- 下面这种最常用 -->
+		select c.cid,cname,mid,mname
+		from country c,minister m
+		where c.cid=#{cid} and m.cid=c.cid
+	</select>
+</mapper>

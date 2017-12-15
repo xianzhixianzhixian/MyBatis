@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.IStudentDao">
+
+	<!-- 
+		#{}中可以放什么
+		1、参数对象的属性
+		2、随意内容,此时的#{}是一个占位符
+		3、参数为map时的key
+		4、参数为map,若key所对应的value,则可将该对象的属性放入(student.score)
+		5、参数的索引号(从0开始)
+	 -->
+	
+	<select id="selectStudentsByIf" resultType="Student">
+		<!-- 下面这种最常用 -->
+		<!-- 1=1会出现注入漏洞攻击 -->
+		select id,name,age,score 
+		from student
+		where 1=1
+		<!-- <if test="name!=null &amp;&amp; name!='' "> -->
+		<if test="name!=null and name!='' ">
+			and name like '%' #{name} '%'
+		</if>
+		<if test="age > 0">
+			and age > #{age}
+		</if>
+	</select>
+	
+	<!-- 
+		自动添加where语句
+		姓名不为空则按姓名查找,年龄不为空则按年龄查找
+		两个都不为空则组合查找,两个都为空则查找全部的记录
+	 -->
+	<select id="selectStudentsByWhere" resultType="Student">
+		select id,name,age,score 
+		from student
+		<!-- where可以自动删除多余的and,但是不会添加不足的and -->
+		<where>
+			<!-- <if test="name!=null and name!='' "> -->
+			<if test="name!=null &amp;&amp; name!='' ">
+				and name like '%' #{name} '%'
+			</if>
+			<if test="age > 0">
+				and age > #{age}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 
+		姓名不为空则按姓名查找,年龄不为空则按年龄查找
+		两个都不为空则按第一个条件(年龄)查找,两个都为空则返回空的结果集
+		相当于case switch语句
+	 -->
+	<select id="selectStudentsByChoose" resultType="Student">
+		select id,name,age,score 
+		from student
+		<!-- where可以自动删除多余的and,但是不会添加不足的and -->
+		<where>
+			<choose>
+				<when test="name!=null and name!=''">
+					and name like '%' #{name} '%'
+				</when>
+				<when test="age > 0">
+					and age > #{age}
+				</when>
+				<otherwise>
+					<!-- 不满足where条件即可 -->
+					and 1=2
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="selectStudentsByForeachArray" resultType="Student">
+		select id,name,age,score 
+		from student
+		<if test="array.length > 0">
+			where id in
+			<!-- item相当于for(int id : ids){} 中的临时变量id -->
+			<foreach collection="array" item="myid" open="(" close=")" separator=",">
+				#{myid}	
+			</foreach>
+		</if>		
+	</select>
+	
+	<select id="selectStudentsByForeachList" resultType="Student">
+		select id,name,age,score 
+		from student
+		<if test="list.size > 0">
+			where id in
+			<!-- item相当于for(Object id : ids){} 中的临时变量id -->
+			<foreach collection="list" item="myid" open="(" close=")" separator=",">
+				#{myid}	
+			</foreach>
+		</if>		
+	</select>
+	
+	<!-- 通过泛型对象查找 -->
+	<select id="selectStudentsByForeachStudentList" resultType="Student">
+		select id,name,age,score 
+		from student
+		<if test="list.size > 0">
+			where id in
+			<!-- item相当于for(Object myStu : stuList){} 中的临时变量myStu -->
+			<foreach collection="list" item="myStu" open="(" close=")" separator=",">
+				<!-- 在这里提取出每个泛型对象中的id信息 -->
+				#{myStu.id}
+			</foreach>
+		</if>		
+	</select>
+	
+	<!-- sql片断 -->
+	<sql id="sqlColumns">
+		id,name,age,score
+	</sql>
+	
+	<select id="selectStudentsBySQLFragment" resultType="Student">
+		select <include refid="sqlColumns"></include>
+		from student
+		<if test="list.size > 0">
+			where id in
+			<!-- item相当于for(Object myStu : stuList){} 中的临时变量myStu -->
+			<foreach collection="list" item="myStu" open="(" close=")" separator=",">
+				#{myStu.id}
+			</foreach>
+		</if>		
+	</select>
+</mapper>

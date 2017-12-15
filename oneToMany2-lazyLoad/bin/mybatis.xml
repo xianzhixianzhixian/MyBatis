@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- 注册DB连接配置文件 -->
+	<properties resource="mysql.properties" />
+	
+	<!-- 设置整个应用所使用的常量 -->
+	<!-- 
+		侵入式查询：把关联对象当成主加载对象的一部分,把关联表当成主表的一部分,访问主加载对象(主表)也会在数据库中查询关联对象(关联表)
+		深度延迟加载：只有当对象要被使用时才去数据库里查找
+	 -->
+	<settings>
+		<!-- 
+			多表连接查询无法使用延迟加载!只有存在多个select语句时才能使用延迟加载,只有单个select语句时不能使用延迟加载
+			配置延迟加载,lazyLoadingEnabled是延迟加载的总开关,
+			只有lazyLoadingEnabled为true时延迟加载才起作用
+		 -->
+		<setting name="lazyLoadingEnabled" value="true"/>
+	</settings>
+	
+	<!-- 给com.mybatis.beans(指定的java包中)中所有类的简单类名作为别名 -->
+	<typeAliases>
+		<!-- <typeAlias type="com.mybatis.beans.Student" alias="Student"/> -->
+		<package name="com.mybatis.beans"/>
+	</typeAliases>
+	
+	<!-- 配置运行环境,default指定用哪个配置 -->
+	<environments default="onlionEM">
+		<environment id="onlionEM">
+			<transactionManager type="JDBC"></transactionManager> <!-- 事务管理器 -->
+			<!-- POOLED采用数据库连接池技术,提高对数据库的访问速度,连接池是dataSource的一种 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}"/>
+				<property name="url" value="${jdbc.url}"/>
+				<property name="username" value="${jdbc.user}"/>
+				<property name="password" value="${jdbc.password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 注册印射文件 -->
+	<mappers>
+		<mapper resource="com/mybatis/dao/mapper.xml"/>
+	</mappers>
+</configuration>

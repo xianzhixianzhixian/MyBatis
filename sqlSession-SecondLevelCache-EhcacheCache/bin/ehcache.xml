@@ -1,0 +1,27 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
+
+	<!-- 二级缓存存放文件夹 -->
+    <diskStore path="java.io.tmpdir"/>
+
+	<!-- 
+		maxElementsInMemory内存中存放最大缓存数
+		eternal缓存是否永久
+		timeToIdleSeconds对象空闲多长时间
+		timeToLiveSeconds对象最长存活时间
+		maxElementsOnDisk磁盘上最多多少缓存数
+		diskExpiryThreadIntervalSeconds对象在磁盘上最长存活时间
+		memoryStoreEvictionPolicy内存存储逐出策略
+		strategy="localTempSwap",内存满了采用什么策略,localTempSwap表示内存多出来的存到磁盘上
+	 -->
+	<!-- 该处对整个应用其作用 -->
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            maxElementsOnDisk="10000000"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap"/>
+    </defaultCache>
+</ehcache>

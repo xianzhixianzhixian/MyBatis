@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="test">
+	
+	<insert id="insertStudent" parameterType="Student">
+		insert into student1(tname,tage,tscore) values(#{name},#{age},#{score})
+	</insert>
+	
+	<insert id="insertStudentCatchId" parameterType="Student">
+		insert into student1(tname,tage,tscore) values(#{name},#{age},#{score})
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select @@identity
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteStudentById" parameterType="Student">
+		delete from student1 where tid=#{id}  <!-- 这里的#{}仅仅是个占位符,里面放什么都可以 -->
+	</delete>
+	
+	<update id="updateStudent" parameterType="Student">
+		update student1 set tname=#{name},tage=#{age},tscore=#{score} where tid=#{id}
+	</update>
+	
+	
+	
+	<!-- 对与数据库列名不同的属性进行映射 -->
+	<resultMap type="Student" id="studentMapper">
+		<id column="tid" property="id" />
+		<result column="tname" property="name" />
+		<result column="tage" property="age" />
+		<result column="tscore" property="score" />
+	</resultMap>
+	<select id="selectAllStudents" resultMap="studentMapper">
+		select tid,tname,tage,tscore from student1
+	</select>
+	<select id="selectStudentById" parameterType="int" resultMap="studentMapper">
+		select tid,tname,tage,tscore from student1 where tid=#{id}
+	</select>
+	<select id="selectStudentsByName" resultMap="studentMapper">
+		select tid,tname,tage,tscore from student1 where tname like '%' #{name} '%'
+	</select>
+</mapper>

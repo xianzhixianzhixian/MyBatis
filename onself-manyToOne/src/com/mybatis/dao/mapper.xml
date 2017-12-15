@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.IStudentDao">
+
+	<!-- 
+		<select id="selectNewsLabelById" resultMap="newsLabelMapper">
+			select id,name,pid from newslabel where id=#{pid}
+		</select>
+	 -->
+ 	<resultMap type="Student" id="studentMapper">
+		<id column="sid" property="sid"/>
+		<result column="sname" property="sname"/>
+		<collection property="courses" ofType="Course">
+			<id column="cid" property="cid"/>
+			<result column="cname" property="cname"/>
+		</collection>
+	</resultMap>
+
+	<select id="selectStudentById" resultMap="studentMapper">
+		select s.sid,sname,c.cid,cname
+		from stucourse s,course c,middle m
+		where s.sid=#{sid} and s.sid=m.sid and c.cid=m.cid
+	</select>
+</mapper>

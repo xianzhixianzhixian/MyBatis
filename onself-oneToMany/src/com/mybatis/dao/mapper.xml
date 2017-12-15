@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.INewsLabelDao">
+
+	<!-- 
+		在collection中：
+		1、property：代表集合对应的属性名称为children；
+		2、column：代表one方的id（配合下面的select就清楚了）
+		3、ofType：注意，这里的ofType代表的是集合里面的对象类型
+		4、select：非常重要的一条可以看到，这段sql根据外键从表中查询所有的匹配给定的的对象。
+		结合select和column，再联想之前的association中的select方式我们可以明白，
+		mybatis的存放策略为：首先执行查询得 到结果集，从结果集中得到相关的列，拼装id和name属性。
+		当mybatis运行到属性时，会从结果集中把id得到,并 作为参数传入cd.itcast.mybatis.mapper.EmployeeMapper.gets,
+		并查询到该对应的 结果,最后把employees设置到Department的emps属性中
+		注意这种方式也遵循延迟加载策略，并且容易产生N+1问题
+	 -->
+	<!-- 
+		<select id="selectSubNewsLabelByParent" resultMap="newsLabelMapper">
+			select id,name from newslabel where pid=#{pid}
+		</select>
+	 -->
+ 	<resultMap type="NewsLabel" id="newsLabelMapper">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<collection property="children"
+					ofType="NewsLabel"
+					select="selectChildrenNewsLabelByParent"
+					column="id"/> <!-- 嵌套查询 -->
+	</resultMap>
+
+	<select id="selectChildrenNewsLabelByParent" resultMap="newsLabelMapper">
+		select id,name from newslabel where pid=#{pid}
+	</select>
+</mapper>

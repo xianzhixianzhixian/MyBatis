@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.IStudentDao">
+	
+	<select id="selectStudentsByCondiction" resultType="Student">
+		<!-- 下面这种最常用 -->
+		select id,name,age,score from student where name like '%' #{0} '%' and age>#{1}
+		
+		<!-- 
+			#{}中可以放什么
+			1、参数对象的属性
+			2、随意内容,此时的#{}是一个占位符
+			3、参数为map时的key
+			4、参数为map,若key所对应的value,则可将该对象的属性放入(student.score)
+			5、参数的索引号(从0开始)
+		 -->
+	</select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.IStudentDao">
+	
+	<!-- values中放的是属性名 -->
+	<!-- parameterType属性可以省略 -->
+	<insert id="insertStudent" parameterType="Student">
+		insert into student(name,age,score) values(#{name},#{age},#{score})
+	</insert>
+	
+	<!-- useGeneratedKeys 要求数据库本身具备主键自动增长的功能，比如说，mysql，sqlserver可以
+	使用useGeneratedKeys=true	不支持主键自动增长的数据库是不能使用useGeneratedKeys =true的 -->
+	<insert id="insertStudentCatchId" parameterType="Student">
+		insert into student(name,age,score) values(#{name},#{age},#{score})
+		<!-- keyProperty是student对象的属性 -->
+		<!-- order指定生成id和insert语句的先后顺序,如果设置为 BEFORE,那么它会首先选择主键,设置 keyProperty,然后执行插入语句 -->
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select @@identity
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteStudentById" parameterType="Student">
+		delete from student where id=#{id}  <!-- 这里的#{}仅仅是个占位符,里面放什么都可以 -->
+	</delete>
+
+	<update id="updateStudent" parameterType="Student">
+		update student set name=#{name},age=#{age},score=#{score} where id=#{id}
+	</update>
+	
+	
+	
+	<select id="selectAllStudents" resultType="Student">
+		select * from student
+	</select>
+	<select id="selectStudentById" parameterType="int" resultType="Student">
+		select * from student where id=#{id}
+	</select>
+	<select id="selectStudentsByName" resultType="Student">
+		<!-- select * from student where name like concat('%',#{name},'%') -->
+		<!-- select * from student where name like '%${value}%' -->
+		<!-- 下面这种最常用 -->
+		select * from student where name like '%' #{name} '%'
+	</select>
+</mapper>

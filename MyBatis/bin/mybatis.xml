@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- 配置运行环境,default指定用哪个配置 -->
+	<environments default="testEM">
+		<environment id="onlionEM">
+			<transactionManager type="JDBC"></transactionManager> <!-- 事务管理器 -->
+			<!-- POOLED采用数据库连接池技术,提高对数据库的访问速度,连接池是dataSource的一种 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/test"/>
+				<property name="username" value="root"/>
+				<property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+		<environment id="testEM">
+			<transactionManager type="JDBC"></transactionManager> <!-- 事务管理器 -->
+			<!-- POOLED采用数据库连接池技术,提高对数据库的访问速度,连接池是dataSource的一种 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/test"/>
+				<property name="username" value="root"/>
+				<property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 注册印射文件 -->
+	<mappers>
+		<mapper resource="com/mybatis/dao/mapper.xml"/>
+	</mappers>
+</configuration>

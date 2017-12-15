@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.ICountryDao">
+	
+	<!-- 该种方式可以使用延迟加载 -->
+	<select id="selectMinisterByCountryId" resultType="Minister">
+		select mid,mname from minister where cid=#{countryid}
+	</select>
+	<resultMap type="Country" id="countryMapper">
+		<id column="cid" property="cid"/>
+		<result column="cname" property="cname"/>
+		<!-- collection property中放入关联属性名,此处是Country中的ministers -->
+		<collection property="ministers"
+					ofType="Minister"
+					select="selectMinisterByCountryId"
+					column="cid"/>
+	<!-- 
+		1、column="cid"中cid的值是从
+		select cid,cname from country where cid=#{cid}
+		查询到的cid的值得到的
+		2、select mid,mname from minister where cid=#{countryid}中
+		#{countryid}是从column="cid"中cid的值得到的
+	 -->
+	</resultMap>
+	
+	<select id="selectCountryById" resultMap="countryMapper">
+		<!-- 下面这种最常用 -->
+		select cid,cname from country where cid=#{cid}
+	</select>
+</mapper>

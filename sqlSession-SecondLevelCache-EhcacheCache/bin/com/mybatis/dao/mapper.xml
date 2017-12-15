@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.IStudentDao">
+	
+	<!-- 该处只对当前命名空间起作用 -->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache">
+		<property name="maxElementsInMemory=" value="10000"/>
+	</cache>
+
+	<!-- 关闭局部二级缓存 -->
+	<!-- 关闭selectStudentById的二级缓存useCache="false" -->
+	<!-- flushCache="false",可以在增删改的时候不清空二级缓存,但是一级缓存仍然会被清空 -->
+	<select id="selectStudentById" resultType="Student" useCache="true" flushCache="false">
+		select id,name,age,score from student where id=#{id}
+	</select>
+	<select id="selectStudentById2" resultType="Student">
+		select id,name,age,score from student where id=#{id}
+	</select>
+</mapper>
